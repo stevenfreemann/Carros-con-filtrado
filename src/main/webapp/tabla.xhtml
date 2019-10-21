@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+            xmlns:h="http://java.sun.com/jsf/html"
+            xmlns:f="http://java.sun.com/jsf/core"
+            xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>Automoviles</title>
+    </h:head>
+    <h:body id="form">
+        
+        <h:form>
+            <h:messages id="msgs"/>  
+            <h:panelGrid id="grid" columns="3" cellpadding="5">
+             <p:outputLabel for="name" value="Nombre: (3 a 10)"></p:outputLabel>
+             <p:inputText id="name" value="#{ctabla.nombre}" required="true"></p:inputText>
+             <p:message for="name" display="icon" />
+             <p:outputLabel value="Marca: (3 a 15)"></p:outputLabel>
+             <p:inputText value="#{ctabla.marca}" required="true"></p:inputText><br/>
+             <p:outputLabel value="Modelo: (1980/2020) "></p:outputLabel>
+             <p:inputText value="#{ctabla.modelo}" required="true"></p:inputText><br/>
+             </h:panelGrid>
+            <p:commandButton value="agregar" actionListener="#{ctabla.llenar()}" update="dtCarros" onclick="location.reload()">
+            </p:commandButton>
+             <p:dataTable id="dtCarros" value="#{ctabla.lista}" var="p"  
+                 rows="10"
+                 paginator="true"
+                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                 rowsPerPageTemplate="5,10,15" 
+                 widgetVar="carsTable"
+                 emptyMessage="No se encontraron autos con esos criterios" filteredValue="#{ctabla.filteredCars}">
+                 
+                 <p:column headerText="Nombre" filterBy="#{p.nombre}" filterMatchMode="contains">
+                     <p:outputLabel value="#{p.nombre}"/>
+                </p:column>
+                 <p:column headerText="Marca"  filterBy="#{p.marca}" filterMatchMode="exact" >
+                        <f:facet name="filter" >
+                            <p:selectOneMenu onchange="PF('carsTable').filter()" styleClass="custom-filter" >
+                              <f:selectItem itemLabel="Seleccione" itemValue="#{null}" noSelectionOption="true" />
+                              <f:selectItems value="#{ctabla.marcas}" />
+                            </p:selectOneMenu>
+                        </f:facet>
+                        <h:outputLabel value="#{p.marca}"/>
+                </p:column>
+                 <p:column headerText="Modelo" filterBy="#{p.modelo}" filterMatchMode="lte">
+                     <f:facet name="filter">
+                    <p:spinner onchange="PF('carsTable').filter()" styleClass="year-spinner custom-filter">
+                    <f:converter converterId="javax.faces.Integer" />
+                    </p:spinner>
+            </f:facet>
+                     <p:outputLabel value="#{p.modelo}"/>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </h:body>
+</html>
